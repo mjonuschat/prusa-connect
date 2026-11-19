@@ -364,7 +364,7 @@ path.
 | `/readings/<id>/role` | `bed` or `chamber`. One device has at most one reading per role |
 
 The id is 1 to 64 characters from `a` to `z`, `0` to `9` and `_`, and it
-starts with a letter. Do not write the paths by hand. Build a
+starts with a letter. Do not type the paths in the driver. Build a
 `connectorapi.Reading` and send its `Patches`:
 
 ```go
