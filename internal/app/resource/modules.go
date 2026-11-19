@@ -364,6 +364,7 @@ func RequestsOf(asked install.ModuleAsks) httpapi.ModuleRequests {
 		MemoryMiB:         asked.MemoryMiB,
 		Data:              asked.Data,
 		Database:          asked.Database,
+		AllowedOrigins:    asked.AllowedOrigins,
 	}
 
 	for _, listen := range asked.Listen {
@@ -389,6 +390,7 @@ func AsksOf(requests httpapi.ModuleRequests) install.ModuleAsks {
 		MemoryMiB:         requests.MemoryMiB,
 		Data:              requests.Data,
 		Database:          requests.Database,
+		AllowedOrigins:    requests.AllowedOrigins,
 	}
 
 	for _, listen := range requests.Listen {
