@@ -13,6 +13,7 @@
     DESCRIBED_CHAMBER,
     DESCRIBED_ENCLOSURE,
   } from '../../../test/readings';
+  import EditorStory from '../editor-story.svelte';
   import TileStory from '../tile-story.svelte';
   import CameraTile from './camera-tile.svelte';
   import ClockTile from './clock-tile.svelte';
@@ -22,6 +23,7 @@
   import PrinterTile from './printer-tile.svelte';
   import PrintersTile from './printers-tile.svelte';
   import SummaryTile from './summary-tile.svelte';
+  import TemperatureSettings from './temperature-settings.svelte';
   import TemperatureTile from './temperature-tile.svelte';
   import UnknownTile from './unknown-tile.svelte';
 
@@ -181,6 +183,19 @@
     type="temperature"
     config={{ device: 'core', heaters: ['nozzle', 'bed', 'enclosure'] }}
   />
+</Story>
+
+<!-- The lines offered are the ones the picked printer describes. -->
+<Story name="Temperature Settings" asChild>
+  <EditorStory
+    context={enclosureChart}
+    editor={TemperatureSettings}
+    config={{ device: 'core', heaters: ['nozzle', 'bed'] }}
+  />
+</Story>
+
+<Story name="Temperature Settings No Printer" asChild>
+  <EditorStory context={fleet} editor={TemperatureSettings} />
 </Story>
 
 <Story name="Temperature Quiet" asChild>
