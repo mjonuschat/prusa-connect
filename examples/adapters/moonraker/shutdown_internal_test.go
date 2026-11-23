@@ -40,7 +40,7 @@ func TestAShutDownKlipperIsReportedAsAnError(t *testing.T) {
 			patches := (&reader{}).patchesFrom(reading(`{
 				"print_stats": {"state": "standby", "filename": ""},
 				"webhooks": {"state": "`+hook+`", "state_message": "Printer is shutdown"}
-			}`, t), time.Unix(0, 0))
+			}`, t), 0, time.Unix(0, 0))
 
 			if got := stateOf(t, patches); got != "ERROR" {
 				t.Errorf("webhooks.state %q beside an idle print_stats reported %q, want ERROR", hook, got)
@@ -74,7 +74,7 @@ func TestTheMachineStateSurvivesFramesThatCarryOnlyOneObject(t *testing.T) {
 	}
 
 	for _, step := range steps {
-		got := stateOf(t, held.patchesFrom(reading(step.frame, t), now))
+		got := stateOf(t, held.patchesFrom(reading(step.frame, t), 0, now))
 		if got != step.want {
 			t.Errorf("%s: reported %q, want %q", step.name, got, step.want)
 		}
@@ -89,15 +89,15 @@ func TestARecoveryWithNoPrintStateIsIdle(t *testing.T) {
 	held := &reader{}
 	now := time.Unix(0, 0)
 
-	if got := stateOf(t, held.patchesFrom(reading(`{"webhooks": {"state": "shutdown"}}`, t), now)); got != "ERROR" {
+	if got := stateOf(t, held.patchesFrom(reading(`{"webhooks": {"state": "shutdown"}}`, t), 0, now)); got != "ERROR" {
 		t.Fatalf("a shutdown reported %q, want ERROR", got)
 	}
 
-	if got := stateOf(t, held.patchesFrom(reading(`{"webhooks": {"state": "ready"}}`, t), now)); got != "IDLE" {
+	if got := stateOf(t, held.patchesFrom(reading(`{"webhooks": {"state": "ready"}}`, t), 0, now)); got != "IDLE" {
 		t.Errorf("a recovery with no print state reported %q, want IDLE", got)
 	}
 
-	if got := stateOf(t, held.patchesFrom(reading(`{"webhooks": {"state": "shutdown"}}`, t), now)); got != "ERROR" {
+	if got := stateOf(t, held.patchesFrom(reading(`{"webhooks": {"state": "shutdown"}}`, t), 0, now)); got != "ERROR" {
 		t.Errorf("a second shutdown reported %q, want ERROR", got)
 	}
 }
@@ -107,7 +107,7 @@ func TestARecoveryWithNoPrintStateIsIdle(t *testing.T) {
 func TestAReadyMachineWithNoPrintStateWritesNoState(t *testing.T) {
 	t.Parallel()
 
-	patches := (&reader{}).patchesFrom(reading(`{"webhooks": {"state": "ready"}}`, t), time.Unix(0, 0))
+	patches := (&reader{}).patchesFrom(reading(`{"webhooks": {"state": "ready"}}`, t), 0, time.Unix(0, 0))
 
 	if got := stateOf(t, patches); got != "" {
 		t.Errorf("a ready machine with no print state reported %q, want nothing", got)
