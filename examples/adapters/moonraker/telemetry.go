@@ -203,9 +203,14 @@ func (p *prints) appendJob(
 
 		// The print is off the bed, so the next one is a different print even
 		// when it is the same file. The id stays in the host's tree, which is
-		// what keeps the row named while the machine tidies up.
-		p.id, p.file = "", ""
+		// what keeps the row named while the machine tidies up. The file stays
+		// here, because a reprint of it sends no filename.
+		p.id = ""
 
+		return out
+	}
+
+	if file == "" {
 		return out
 	}
 
