@@ -398,6 +398,10 @@ func (s *Session) callSync(ctx context.Context, method string, params any, into 
 			return fmt.Errorf("%w: %s: %w", ErrUnreachable, method, err)
 		}
 
+		if frame.Method == notifyKlippyDisconnected {
+			return fmt.Errorf("%w: Klippy disconnected during handshake", ErrUnreachable)
+		}
+
 		if frame.ID == nil || *frame.ID != id {
 			continue
 		}
@@ -489,11 +493,12 @@ func (s *Session) dispatch(data []byte) {
 		return
 	}
 
-	if frame.Method != notifyStatusUpdate {
-		return
+	switch frame.Method {
+	case notifyKlippyDisconnected:
+		s.hangUp()
+	case notifyStatusUpdate:
+		s.update(frame.Params)
 	}
-
-	s.update(frame.Params)
 }
 
 // answer hands one reply to the call that is waiting for it. A reply nobody is

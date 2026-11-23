@@ -261,6 +261,17 @@ func (h *Host) Scripts() []string {
 	return slices.Clone(h.scripts)
 }
 
+// Notify sends a Moonraker notification to every connected client.
+func (h *Host) Notify(method string) {
+	h.mu.Lock()
+	open := slices.Clone(h.conns)
+	h.mu.Unlock()
+
+	for _, held := range open {
+		_ = held.write(map[string]any{"jsonrpc": jsonrpcVersion, "method": method, "params": nil})
+	}
+}
+
 // Push sends one status update to every open connection and folds it into what
 // a later query answers, which is what a real machine reporting a change does.
 func (h *Host) Push(status map[string]map[string]any) {

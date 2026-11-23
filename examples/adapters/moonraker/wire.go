@@ -22,6 +22,9 @@ const (
 // are the changed status and the Klipper event time, in that order.
 const notifyStatusUpdate = "notify_status_update"
 
+// Moonraker clears subscriptions when Klippy disconnects, without closing the websocket.
+const notifyKlippyDisconnected = "notify_klippy_disconnected"
+
 // The Klipper objects this dialect reads. Each one is a section in the
 // machine's own configuration, so a machine that has not got the section does
 // not report the object either.
